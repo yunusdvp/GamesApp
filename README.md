@@ -8,12 +8,14 @@ GamesApp is a mobile application where users can search, review, and find their 
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [ScreenShots](#Screenshots)
 - [Features](#features)
 - [Requirements](#requirements)
 - [Dependencies](#dependencies)
 - [Feedback and Support](#feedback-and-support)
 - [Contributors](#contributors)
 - [License](#license)
+
 
 ## Installation
 
@@ -28,6 +30,15 @@ To install the project, follow these steps:
 ## Usage
 
 After building the project, deploy the app to your device or simulator. Once the app is open, you can search for games, review them, and add them to your favorites list.
+
+## ScreenShots
+
+![Ekran Resmi 2024-05-26 23-38-57](https://i.ibb.co/cLr8T4w/Ekran-Resmi-2024-05-26-23-38-57.png)
+
+![Ekran Resmi 2024-05-26 23-39-17](https://i.ibb.co/2SdqzKK/Ekran-Resmi-2024-05-26-23-39-17.png)
+
+![Ekran Resmi 2024-05-26 23-39-33](https://i.ibb.co/8sv2HJ5/Ekran-Resmi-2024-05-26-23-39-33.png)
+
 
 ## Features
 
@@ -60,7 +71,4 @@ After building the project, deploy the app to your device or simulator. Once the
 ## License
 
 - This project is licensed under the MIT License.
-
-
-
 
