@@ -49,6 +49,18 @@ class GamesCollectionViewCell: UICollectionViewCell {
         ])
     }
     
+       func configure(with favoriteGame: FavoriteGames) {
+           gameName.text = favoriteGame.name
+           if let imageUrlString = favoriteGame.imageUrl,
+              let imageUrl = URL(string: imageUrlString) {
+               activityIndicator.startAnimating()
+               imageView.kf.setImage(with: imageUrl, completionHandler: { [weak self] _ in
+                   self?.activityIndicator.stopAnimating()
+               })
+           } else {
+               imageView.image = UIImage(named: "placeholder")
+           }
+       }
     public func configure(withModel model: Result) {
         gameName.text = model.name
         guard let imageUrlString = model.backgroundImage,

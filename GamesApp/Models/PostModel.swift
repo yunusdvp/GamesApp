@@ -190,9 +190,111 @@ struct ShortScreenshot: Codable {
     let id: Int?
     let image: String?
 }
+struct Screenshot: Codable {
+    let id: Int
+    let image: String
+}
+
+struct ScreenshotResponse: Codable {
+    let results: [Screenshot]
+}
 
 // MARK: - Store
 struct Store: Codable {
     let id: Int?
     let store: Genre?
 }
+// MARK: - GameDetailsModel
+struct GameDetailsModel: Codable {
+    let id: Int?
+    let slug, name, nameOriginal: String?
+    let description: String?
+    let metacritic: Int?
+    let released: String?
+    let tba: Bool?
+    let updated: String?
+    let backgroundImage, backgroundImageAdditional: String?
+    let website: String?
+    let rating: Double?
+    let ratingTop: Int?
+    let ratings: [Rating]?
+    let reactions: [String: Int]?
+    let requirements: Requirements?
+    let added: Int?
+    let addedByStatus: AddedByStatus?
+    let playtime, screenshotsCount, moviesCount, creatorsCount: Int?
+    let achievementsCount, parentAchievementsCount, redditCount: Int?
+    let redditDescription, redditLogo, redditName, redditUrl: String?
+    let reviewsTextCount, ratingsCount, suggestionsCount: Int?
+    let alternativeNames: [String]?
+    let metacriticUrl: String?
+    let parentsCount, additionsCount, gameSeriesCount, userGame: Int?
+    let reviewsCount: Int?
+    let saturatedColor, dominantColor: String?
+    let platforms: [PlatformElement]?
+    let stores: [Store]?
+    let developers, genres, tags, publishers: [Genre]?
+    let esrbRating: EsrbRating?
+    let clip: Clip?
+    let descriptionRaw: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id, slug, name
+        case nameOriginal = "name_original"
+        case description, metacritic, released, tba, updated
+        case backgroundImage = "background_image"
+        case backgroundImageAdditional = "background_image_additional"
+        case website, rating
+        case ratingTop = "rating_top"
+        case ratings, reactions, added
+        case addedByStatus = "added_by_status"
+        case playtime
+        case screenshotsCount = "screenshots_count"
+        case moviesCount = "movies_count"
+        case creatorsCount = "creators_count"
+        case achievementsCount = "achievements_count"
+        case parentAchievementsCount = "parent_achievements_count"
+        case redditCount = "reddit_count"
+        case redditDescription = "reddit_description"
+        case redditLogo = "reddit_logo"
+        case redditName = "reddit_name"
+        case redditUrl = "reddit_url"
+        case reviewsTextCount = "reviews_text_count"
+        case ratingsCount = "ratings_count"
+        case requirements
+        case suggestionsCount = "suggestions_count"
+        case alternativeNames = "alternative_names"
+        case metacriticUrl = "metacritic_url"
+        case parentsCount = "parents_count"
+        case additionsCount = "additions_count"
+        case gameSeriesCount = "game_series_count"
+        case userGame = "user_game"
+        case reviewsCount = "reviews_count"
+        case saturatedColor = "saturated_color"
+        case dominantColor = "dominant_color"
+        case platforms, stores, developers, genres, tags, publishers
+        case esrbRating = "esrb_rating"
+        case clip
+        case descriptionRaw = "description_raw"
+    }
+}
+
+// MARK: - Clip
+struct Clip: Codable {
+    let clip: String?
+    let clips: Clips?
+    let video: String?
+    let preview: String?
+}
+
+// MARK: - Clips
+struct Clips: Codable {
+    let the320, the640, full: String?
+
+    enum CodingKeys: String, CodingKey {
+        case the320 = "320"
+        case the640 = "640"
+        case full
+    }
+}
+

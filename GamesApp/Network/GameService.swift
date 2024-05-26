@@ -26,5 +26,15 @@ class GameService {
             ]
             return apiClient.fetch(endpoint: "games", parameters: parameters)
         }
+    func getGameDetails(byId id: Int) -> AnyPublisher<GameDetailsModel, APIError>{
+    
+        apiClient.fetch(endpoint: "games/\(id)")
+    }
+    
+    func getScreenshots(byGameId id: Int) -> AnyPublisher<[Screenshot], APIError> {
+            return apiClient.fetch(endpoint: "games/\(id)/screenshots")
+                .map { (response: ScreenshotResponse) in response.results }
+                .eraseToAnyPublisher()
+        }
 }
 

@@ -1,6 +1,8 @@
 import UIKit
 import SkeletonView
 
+// MARK: - HomeViewInterface Protocol
+
 protocol HomeViewInterface: AnyObject {
     func prepareCollectionView()
     func prepareTopCollectionView()
@@ -12,6 +14,8 @@ protocol HomeViewInterface: AnyObject {
     func showError(error: APIError)
     func scrollToNextTopItem(currentItem: Int, nextItem: Int)
 }
+
+// MARK: - HomeViewController
 
 final class HomeViewController: UIViewController {
     
@@ -29,7 +33,7 @@ final class HomeViewController: UIViewController {
         super.viewDidLoad()
         viewModel.view = self
         viewModel.viewDidLoad()
-        
+        self.view.applyGradientBackground()
         registerSkeletonCells()
         showSkeleton()
     }
@@ -42,15 +46,13 @@ final class HomeViewController: UIViewController {
     @IBAction func allGamesButtonTapped(_ sender: UIButton) {
         viewModel.allGamesButtonTapped()
     }
-
+    
     private func showSkeleton() {
-        //filteredOptionCollectionView.showAnimatedGradientSkeleton()
         gamesCollectionView.showAnimatedGradientSkeleton()
         topCollectionView.showAnimatedGradientSkeleton()
     }
 
     private func hideSkeleton() {
-        //filteredOptionCollectionView.hideSkeleton()
         gamesCollectionView.hideSkeleton()
         topCollectionView.hideSkeleton()
     }
@@ -74,10 +76,13 @@ final class HomeViewController: UIViewController {
     }
 }
 
+// MARK: - HomeViewInterface Implementation
+
 extension HomeViewController: HomeViewInterface {
     func prepareFilteredOptionCollectionView() {
         filteredOptionCollectionView.isSkeletonable = true
         filteredOptionCollectionView.setDataSourceAndDelegate(self)
+        filteredOptionCollectionView.backgroundColor = .clear
         filteredOptionCollectionView.register(cellType: FilteredOptionCollectionViewCell.self)
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -107,6 +112,8 @@ extension HomeViewController: HomeViewInterface {
         searchBar.delegate = self
         searchBar.placeholder = SearchBar.placeholder
         searchBar.layer.cornerRadius = 10
+        searchBar.backgroundColor = .clear
+        searchBar.tintColor = .clear
     }
     
     func reloadCollectionView() {
@@ -126,6 +133,7 @@ extension HomeViewController: HomeViewInterface {
         gamesCollectionView.isSkeletonable = true
         gamesCollectionView.setDataSourceAndDelegate(self)
         gamesCollectionView.register(cellType: GamesCollectionViewCell.self)
+        gamesCollectionView.backgroundColor = .clear
         gamesCollectionView.layer.cornerRadius = 10
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: LayoutConstants.GamesCollectionView.itemWidth, height: LayoutConstants.GamesCollectionView.itemHeight)
@@ -156,6 +164,8 @@ extension HomeViewController: HomeViewInterface {
     }
 }
 
+// MARK: - UISearchBarDelegate
+
 extension HomeViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         viewModel.searchBarTextDidChange(searchText: searchText)
@@ -172,6 +182,8 @@ extension HomeViewController: UISearchBarDelegate {
         gamesCollectionView.setContentOffset(.zero, animated: true)
     }
 }
+
+// MARK: - CollectionViewDataSource, CollectionViewDelegate
 
 extension HomeViewController: SkeletonCollectionViewDataSource, SkeletonCollectionViewDelegate {
     func collectionSkeletonView(_ skeletonView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -205,25 +217,38 @@ extension HomeViewController: SkeletonCollectionViewDataSource, SkeletonCollecti
             return cell
         } else if collectionView == topCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TopCollectionViewCell.identifier, for: indexPath) as! TopCollectionViewCell
-            cell.configure(withModel: viewModel.results[indexPath.row])
-            cell.apply3DEffect() // Apply 3D effect here
+            if indexPath.row < viewModel.results.count {
+                cell.configure(withModel: viewModel.results[indexPath.row])
+                cell.apply3DEffect()
+            } else {
+                // Handle the case where the index is out of bounds
+                // Optionally configure a default state or return a placeholder cell
+                print("Index out of bounds for viewModel.results at indexPath.row: \(indexPath.row)")
+            }
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GamesCollectionViewCell.identifier, for: indexPath) as! GamesCollectionViewCell
-            let index = indexPath.row + min(3, viewModel.results.count)
-            if index < viewModel.results.count {
-                cell.configure(withModel: viewModel.results[index])
+            if indexPath.row < viewModel.results.count {
+                cell.configure(withModel: viewModel.results[indexPath.row])
+                cell.apply3DEffect()
+            } else {
+                // Handle the case where the index is out of bounds
+                // Optionally configure a default state or return a placeholder cell
+                print("Index out of bounds for viewModel.results at indexPath.row: \(indexPath.row)")
             }
-            cell.apply3DEffect() // Apply 3D effect here
             return cell
         }
     }
+
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == filteredOptionCollectionView {
             let platform = Platforms.allCases[indexPath.row]
             print("Platform selected: \(platform)")
             viewModel.fetchGames(for: platform.rawValue, loadMore: false)
+        } else {
+                let game = viewModel.results[indexPath.row]
+                navigateToDetailViewController(with: game.id)
         }
     }
     
@@ -234,5 +259,14 @@ extension HomeViewController: SkeletonCollectionViewDataSource, SkeletonCollecti
             let height = scrollView.frame.size.height
             viewModel.handleScroll(offsetY: offsetY, contentHeight: contentHeight, frameHeight: height)
         }
+    }
+    
+    private func navigateToDetailViewController(with gameId: Int?) {
+        guard let gameId = gameId else { return }
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let detailViewController = storyboard.instantiateViewController(withIdentifier: "DetailViewController") as! DetailViewController
+        let detailViewModel = DetailViewModel(gameId: gameId)
+        detailViewController.viewModel = detailViewModel
+        navigationController?.pushViewController(detailViewController, animated: true)
     }
 }

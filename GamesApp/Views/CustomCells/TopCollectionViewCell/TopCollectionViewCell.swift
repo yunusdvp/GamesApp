@@ -33,6 +33,7 @@ class TopCollectionViewCell: UICollectionViewCell {
             ])
         }
     
+    
     public func configure(withModel model: Result) {
         guard let imageUrlString = model.backgroundImage,
               let imageUrl = URL(string: imageUrlString) else {

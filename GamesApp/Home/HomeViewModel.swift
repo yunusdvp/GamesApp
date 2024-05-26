@@ -27,14 +27,14 @@ final class HomeViewModel: HomeViewModelInterface {
     
     weak var view: HomeViewInterface?
 
-    private(set) var normalResults = [Result]()
-    private(set) var searchResults = [Result]()
+    private var allResults = [Result]()
+    private var filteredResults = [Result]()
     private var nextPageURL: String?
     private var searchNextPageURL: String?
     private var platformNextPageURL: String?
     private var isLoading = false
     private(set) var isSearching = false
-    var isDataLoading = true // Verilerin yüklenip yüklenmediğini kontrol eder
+    var isDataLoading = true
     private var cancellables = Set<AnyCancellable>()
     private var currentPlatformId: Int?
 
@@ -46,7 +46,7 @@ final class HomeViewModel: HomeViewModelInterface {
     }
 
     var results: [Result] {
-        return isSearching ? searchResults : normalResults
+        return isSearching ? filteredResults : allResults
     }
 
     func viewDidLoad() {
@@ -89,7 +89,7 @@ final class HomeViewModel: HomeViewModelInterface {
     func clearSearch() {
         isSearching = false
         currentPlatformId = nil
-        searchResults.removeAll()
+        filteredResults.removeAll()
         searchNextPageURL = nil
         view?.reloadCollectionView()
         view?.showTopCollectionView()
@@ -112,21 +112,21 @@ final class HomeViewModel: HomeViewModelInterface {
 
     private func handleDataResponse(postModel: PostModel, isSearch: Bool) {
         if isSearch {
-            searchResults.append(contentsOf: postModel.results ?? [])
+            filteredResults.append(contentsOf: postModel.results ?? [])
             searchNextPageURL = postModel.next
         } else {
-            normalResults.append(contentsOf: postModel.results ?? [])
+            allResults.append(contentsOf: postModel.results ?? [])
             nextPageURL = postModel.next
         }
-        isDataLoading = false // Veriler yüklendiğinde isDataLoading'i false yap
+        isDataLoading = false
         view?.reloadCollectionView()
         isLoading = false
     }
 
     private func handleSearchResponse(postModel: PostModel) {
-        searchResults.append(contentsOf: postModel.results ?? [])
+        filteredResults.append(contentsOf: postModel.results ?? [])
         searchNextPageURL = postModel.next
-        isDataLoading = false // Veriler yüklendiğinde isDataLoading'i false yap
+        isDataLoading = false
         view?.reloadCollectionView()
         isLoading = false
     }
@@ -153,8 +153,8 @@ final class HomeViewModel: HomeViewModelInterface {
     }
 
     private func resetPagination() {
-        searchResults.removeAll()
-        normalResults.removeAll()
+        allResults.removeAll()
+        filteredResults.removeAll()
         searchNextPageURL = nil
         nextPageURL = nil
         platformNextPageURL = nil
@@ -199,6 +199,7 @@ final class HomeViewModel: HomeViewModelInterface {
             searchGames(byName: searchText)
         } else if searchText.isEmpty {
             clearSearch()
+            allGamesButtonTapped()
             view?.showTopCollectionView()
         }
     }
@@ -219,9 +220,8 @@ final class HomeViewModel: HomeViewModelInterface {
         if !loadMore {
             resetPagination()
             currentPlatformId = platformId
-            normalResults.removeAll()
-            isDataLoading = true // Verileri yüklemeye başlarken isDataLoading'i true yap
-            view?.reloadCollectionView() // Ensure the UI updates immediately
+            isDataLoading = true
+            view?.reloadCollectionView()
         }
 
         gameService.getGamesByPlatform(platformId: platformId, page: loadMore ? getPage(from: platformNextPageURL ?? "") : 1)
@@ -233,9 +233,9 @@ final class HomeViewModel: HomeViewModelInterface {
     }
 
     private func handlePlatformResponse(postModel: PostModel) {
-        normalResults.append(contentsOf: postModel.results ?? [])
+        allResults.append(contentsOf: postModel.results ?? [])
         platformNextPageURL = postModel.next
-        isDataLoading = false // Veriler yüklendiğinde isDataLoading'i false yap
+        isDataLoading = false
         view?.reloadCollectionView()
         isLoading = false
     }
