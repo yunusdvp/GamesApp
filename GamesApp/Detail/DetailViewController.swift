@@ -9,9 +9,6 @@ protocol DetailViewInterface: AnyObject {
     func updateFavoriteButton(isFavorite: Bool)
 }
 
-import UIKit
-import SkeletonView
-
 class DetailViewController: UIViewController {
 
     @IBOutlet weak var descriptionText: UITextView!
@@ -53,7 +50,11 @@ class DetailViewController: UIViewController {
     func updateFavoriteButton(isFavorite: Bool) {
         navigationItem.rightBarButtonItem?.image = UIImage(systemName: isFavorite ? "star.fill" : "star")
     }
-
+    
+    @IBAction func goToWebButtonTapped(_ sender: UIButton) {
+        viewModel.openWebsite(from: self)
+    }
+    
     private func setupCollectionView() {
         imagesCollectionView.isSkeletonable = true
         imagesCollectionView.setDataSourceAndDelegate(self)

@@ -1,18 +1,26 @@
 import Foundation
 import Combine
 import Kingfisher
-
+import SafariServices
 protocol DetailViewModelInterface: AnyObject {
     var view: DetailViewInterface? { get set }
     func fetchGameDetails()
+    func openWebsite(from viewController: UIViewController)
 }
 
 final class DetailViewModel: DetailViewModelInterface {
+    func openWebsite(from viewController: UIViewController) {
+        guard let url = websiteURL else { return }
+        let safariVC = SFSafariViewController(url: url)
+        viewController.present(safariVC, animated: true, completion: nil)
+    }
+    
     weak var view: DetailViewInterface?
     
     private let gameId: Int
     private let gameService: GameService
     private var cancellables = Set<AnyCancellable>()
+    private var websiteURL: URL?
     
     init(gameId: Int, gameService: GameService = GameService()) {
         self.gameId = gameId
@@ -38,6 +46,9 @@ final class DetailViewModel: DetailViewModelInterface {
                 if let imageUrlString = gameDetails.backgroundImage,
                    let imageUrl = URL(string: imageUrlString) {
                     self?.fetchGameImage(from: imageUrl)
+                }
+                if let website = gameDetails.website, let url = URL(string: website) {
+                self?.websiteURL = url
                 }
                 
                 self?.fetchScreenshots()
