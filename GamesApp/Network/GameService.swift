@@ -12,10 +12,10 @@ class GameService {
         return apiClient.fetch(endpoint: "games", parameters: parameters)
     }
 
-    func searchGames(byName name: String, page: Int = 1) -> AnyPublisher<PostModel, APIError> { // Added page parameter
+    func searchGames(byName name: String, page: Int = 1) -> AnyPublisher<PostModel, APIError> {
             let parameters = [
                 "search": name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? name,
-                "page": "\(page)" // Added page parameter
+                "page": "\(page)" 
             ]
             return apiClient.fetch(endpoint: "games", parameters: parameters)
         }

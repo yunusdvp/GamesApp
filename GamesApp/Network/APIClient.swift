@@ -10,7 +10,7 @@ enum APIError: Error {
 class APIClient {
     static let shared = APIClient()
     private let baseURL = "https://api.rawg.io/api/"
-    private let apiKey = "f00bc32deb804013b62e122ac698f1d8" // Replace with your actual API key
+    private let apiKey = "f00bc32deb804013b62e122ac698f1d8" 
 
     private init() {}
 
