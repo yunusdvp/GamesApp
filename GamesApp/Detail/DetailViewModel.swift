@@ -26,7 +26,7 @@ final class DetailViewModel: DetailViewModelInterface {
         self.gameId = gameId
         self.gameService = gameService
     }
-
+    
     func fetchGameDetails() {
         gameService.getGameDetails(byId: gameId)
             .receive(on: DispatchQueue.main)
@@ -40,7 +40,7 @@ final class DetailViewModel: DetailViewModelInterface {
                 if let text = gameDetails.descriptionRaw{
                     self?.view?.updateDescriptionText(text)
                 }
-                   
+                
                 self?.view?.updateDescriptionText(gameDetails.descriptionRaw)
                 
                 if let imageUrlString = gameDetails.backgroundImage,
@@ -48,7 +48,7 @@ final class DetailViewModel: DetailViewModelInterface {
                     self?.fetchGameImage(from: imageUrl)
                 }
                 if let website = gameDetails.website, let url = URL(string: website) {
-                self?.websiteURL = url
+                    self?.websiteURL = url
                 }
                 
                 self?.fetchScreenshots()

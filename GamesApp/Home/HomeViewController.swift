@@ -28,7 +28,7 @@ final class HomeViewController: UIViewController {
     
     private lazy var viewModel: HomeViewModelInterface = HomeViewModel()
     private var isDataLoading = true
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.view = self
@@ -51,7 +51,7 @@ final class HomeViewController: UIViewController {
         gamesCollectionView.showAnimatedGradientSkeleton()
         topCollectionView.showAnimatedGradientSkeleton()
     }
-
+    
     private func hideSkeleton() {
         gamesCollectionView.hideSkeleton()
         topCollectionView.hideSkeleton()
@@ -239,7 +239,7 @@ extension HomeViewController: SkeletonCollectionViewDataSource, SkeletonCollecti
             return cell
         }
     }
-
+    
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == filteredOptionCollectionView {
@@ -247,8 +247,8 @@ extension HomeViewController: SkeletonCollectionViewDataSource, SkeletonCollecti
             print("Platform selected: \(platform)")
             viewModel.fetchGames(for: platform.rawValue, loadMore: false)
         } else {
-                let game = viewModel.results[indexPath.row]
-                navigateToDetailViewController(with: game.id)
+            let game = viewModel.results[indexPath.row]
+            navigateToDetailViewController(with: game.id)
         }
     }
     

@@ -10,14 +10,14 @@ protocol DetailViewInterface: AnyObject {
 }
 
 class DetailViewController: UIViewController {
-
+    
     @IBOutlet weak var descriptionText: UITextView!
     @IBOutlet weak var imagesCollectionView: UICollectionView!
     @IBOutlet weak var gameImage: UIImageView!
     
     var viewModel: DetailViewModelInterface!
     private var screenshotURLs: [URL] = []
-
+    
     private let fullScreenImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
@@ -42,7 +42,7 @@ class DetailViewController: UIViewController {
         let favoriteButton = UIBarButtonItem(image: UIImage(systemName: "star"), style: .plain, target: self, action: #selector(favoriteButtonTapped))
         navigationItem.rightBarButtonItem = favoriteButton
     }
-
+    
     @objc private func favoriteButtonTapped() {
         // Handle favorite button tap
     }
@@ -92,14 +92,14 @@ extension DetailViewController: DetailViewInterface {
         descriptionText.text = text
         hideSkeletons()
     }
-
+    
     func showError(_ error: APIError) {
         hideSkeletons()
         let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
-
+    
     func updateScreenshots(_ urls: [URL]) {
         print("Updating screenshots with URLs: \(urls)")
         self.screenshotURLs = urls
